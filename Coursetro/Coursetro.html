@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie-edge">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+
+    <title>Videonizer !</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <script src="./node_modules/web3/dist/web3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 text-center mt-3">
+                <div class="col-12">
+                    <h1>Blockchain Instructor</h1>
+                    <h2 id="instructor"></h2>
+                    <img id="loader" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">                </div>
+                <form>
+                    <div class="form-group text-lg">
+                        <label for="name">Instructor Name</label>
+                        <input type="text" class="form-control" id="name" placeholder="Enter Instructor Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Instructor Age</label>
+                        <input type="text" class="form-control" id="age" placeholder="Enter Age">
+                    </div>
+                    <button id="button" class="btn btn-primary btn-lg">Update Instructor</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        if (typeof web3 !== 'undefined') {
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            // set the provider you want from Web3.providers
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        }
+
+        web3.eth.defaultAccount = web3.eth.accounts[1];
+
+        var CoursetroContract = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_fName",
+				"type": "string"
+			},
+			{
+				"name": "_age",
+				"type": "uint256"
+			}
+		],
+		"name": "setInstructor",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getInstructor",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "age",
+				"type": "uint256"
+			}
+		],
+		"name": "Instructor",
+		"type": "event"
+	}
+]);
+
+        var Coursetro = CoursetroContract.at('0x51eebc15555c7b6a5707d0ae6952beb2375848dd');
+        console.log(Coursetro);
+
+        //         Coursetro.getInstructor(function(error, result){
+        //     if(!error)
+        //         {
+        //             $("#instructor").html(result[0]+' ('+result[1]+' years old)');
+        //             console.log(result);
+        //         }
+        //     else
+        //         console.error(error);
+        // });
+
+        var instructorEvent = Coursetro.Instructor();
+
+        instructorEvent.watch(function (error, result) {
+            if (!error) {
+                $("#loader").hide();
+                $("#instructor").html(result.args.name + ' (' + result.args.age + ' years old)');
+            } else {
+                $("#loader").hide();
+                console.log(error);
+            }
+        });
+
+
+        $("#button").click(function () {
+            $("#loader").show();
+            Coursetro.setInstructor($("#name").val(), $("#age").val());
+        });
+
+
+    </script>
+
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

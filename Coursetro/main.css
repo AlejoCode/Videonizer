@@ -1,0 +1,40 @@
+body {
+    /* background:url(images/Background.jpg); */
+    background:transparent url('images/Background.jpg') no-repeat center center /cover;
+    /* https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1rrLMEjCjGdz2Zx7XcJsk85KkEw79yy1hvPi63eZ_WycBXoBi */
+    
+    padding: 2em;
+    font-family: 'Raleway','Source Sans Pro', 'Arial';
+}
+/* .container {
+    width: 50%;
+    margin: 0 auto;
+} */
+label {
+    /* display:block; */
+    margin-bottom:10px;
+    font-size: 35px;
+}
+/* input {
+    padding:10px;
+    width: 50%;
+    margin-bottom: 1em;
+}*/
+button {
+    /* margin: 2em 0;
+    padding: 1em 4em;
+    display:block; */
+    /* font-size: 35px; */
+
+} 
+
+#instructor {
+    padding:1em;
+    background-color:#fff;
+    margin: 1em 0;
+}
+
+#loader {
+    width: 100px;
+    display:none;
+}
