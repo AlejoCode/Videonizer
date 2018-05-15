@@ -5,8 +5,15 @@ contract Videonizer {
     address owner;
     uint unActiveStudents = 0;
     uint activeStudents = 0;
-    uint percentage = 0;
+    uint activeteachers = 0;
+    uint studentProfit = 0;
+    uint teacherProfit = 0;
+    uint constant teacherPercentage = 70;
+    uint constant studentPercentage = 30;
     uint constant videoPrice = 20 ether;
+    address[] public studentsAccounts;
+    address[] public teachersAccounts;
+
     
     constructor() public {
         owner = msg.sender;
@@ -38,13 +45,21 @@ contract Videonizer {
         bool haveVideo;
         uint tokens;
     }
+    
+    struct Teacher {
+        address sAddress;
+        string fName;
+        string lName;
+        string videoDescription;
+        string videoHash;
+    }
+    
+    mapping (address =>Teacher) teachers;
 
     mapping (address => Student) students;
-    address[] public studentsAccounts;
 
     function setStudent(string _fName, string _lName) public {
         
-//        var student = students[_address];
         students[msg.sender] = Student ({
             sAddress: msg.sender,
             fName: _fName,
@@ -53,6 +68,20 @@ contract Videonizer {
             status: false,
             tokens: 0
         });
+    }
+    
+    function setTeacher(string _fName, string _lName, string _videoDescription, string _videoHash) onlyOwner public {
+        
+        teachers[msg.sender] = Teacher ({
+            sAddress: msg.sender,
+            fName: _fName,
+            lName: _lName,
+            videoDescription: _videoDescription,
+            videoHash: _videoHash
+        });
+        
+        teachersAccounts.push(msg.sender) -1;
+        activeteachers += 1;
         
     }
     
@@ -63,7 +92,6 @@ contract Videonizer {
         students[msg.sender].status = true;
         studentsAccounts.push(msg.sender) -1;
         activeStudents += 1;
-        
     }
     
     function getActiveStudents() view public returns (uint) {
@@ -83,9 +111,13 @@ contract Videonizer {
     }
 
     function PayContract() onlyOwner payable public {
-        percentage = (((address(this).balance) / (studentsAccounts.length)));
-        for(uint x = 0 ; x < studentsAccounts.length; x++) {
-            studentsAccounts[x].transfer(percentage);
+        studentProfit = (((((address(this).balance) / (studentsAccounts.length))) * studentPercentage)) / 100;
+        teacherProfit = (((((address(this).balance) / (teachersAccounts.length))) * teacherPercentage)) / 100;
+        for(uint x = 0; x < studentsAccounts.length; x++) {
+            studentsAccounts[x].transfer(studentProfit);
+        }
+        for(uint y = 0; y < teachersAccounts.length; y++) {
+            teachersAccounts[y].transfer(teacherProfit);
         }
     }
     
